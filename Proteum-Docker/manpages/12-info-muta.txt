@@ -1,0 +1,17 @@
+info-muta
+
+This program is a filter, used with "muta -l" to extract the number
+of certain kinds of mutants. The general form of using it is:
+
+> muta -l myprog | info-muta
+
+will print on stdou the number of all mutants marked as equivalent.
+Other kinds of mutants can be assessed with the following parameters
+which are slf explanatory:
+
+-equivalent or -dead or -alive or -anomalous
+
+In addition, -active or -inactive can be used with the above parameters
+to indicate that only active/inactive mutants should be listed.
+
+ 

@@ -1,0 +1,107 @@
+report
+
+This program is used to produce two types of reports: one about
+the test cases and one about mutants X test cases.
+The type of information to be displayed is determined by the 
+"-L" parameter.
+
+Parameters:
+
+-------------------------------------------
+-D directory
+
+Tells in wich directory the test session and all program files are.
+If this parameter is not used, all the programs must be in the current
+directory.
+
+-------------------------------------
+-S filename
+
+Specifies the name of the file that will receive the report. It is 
+stored in the same directory of the test session.
+
+> report -tcase -S myreport.txt myprog
+
+Generates a basic report and stores it in "myreport.txt".
+If this parameter is not provided, a file with the name of the test
+session is created with suffix ".lst" or ".trc" for a test case and
+a trace report respectivelly.
+
+-------------------------------------
+-tcase or -trace
+
+One of these has to be the first parameter in the command line. The
+first will produce a report with details about test cases, including
+the number of mutants each one kills. The second presents information
+for each mutant, like the number of test cases they are executed 
+against.
+
+-------------------------------------
+-L number
+
+This option is used to specify which information should be included 
+in the report. The number is the summation of specific selectors
+and is dependent of the type of report.
+
+If -trace is the first parameter, then the selectors to be used for
+-L are:
+
+1 - shows, for each mutant the number of test cases it is executed
+agains, the number of test cases that kill the mutant, the number
+of test cases that are avoided by using data flow information and 
+the number of test cases the mutant is not executed agains (for 
+instance because the mutant is already killed)
+2 - shows for each mutant what is the result of executing it agaisnt
+each available test cases. The values between 0 and 7 represent
+the following:
+	0 - mutant was not executed against test case
+	1 - mutant was executed but test case did not kill mutant
+	2 - test case killed mutant because a differet output was
+            produced
+	3 - test case killed mutant because the mutant has an 
+	    abnormal termination
+	4 - test case killed mutant because the mutant was timeouted,
+	    it means, the mutant run for a much large time than the
+	    the original program
+	5 - test case killed mutant because of a TRAP function
+	6 - the test case was not used with the mutant because it 
+	    does not reach the mutation point
+	7 - when a mutant is anomalous this value appears for one
+	    of the test cases.
+
+Examples:
+
+> tcase -trace -L 1 myprog
+
+produces a report only with the basic information for each mutant.
+
+> tcase -trace -L 2 myprog
+
+produces a report with the behavior of each mutant against each test
+case.
+
+> tcase -trace -L 3 myprog
+
+produces a report with both information.
+
+When the -tcase is used, the -L selectors have the following meanings:
+
+1 - only effective (that kill at least one mutant) test cases are shown
+2 - show the number of mutants not executed by the test case
+4 - show the number of mutants executed and not killed by the test case
+8 - show the number of mutants killed by the test case, separated by 
+    each possible "causa mortis"
+16 - show the number of mutants killed by the test case (total)
+32 - show if test case is enabled or disabled
+64 - show the execution times of the test case
+128 - show stdin of the test case
+256 - show the stdou and stderr of the test case
+
+Example:
+
+> report -tcase -L 511 myprog
+
+generates a report with all the information about the effective test cases.
+
+
+

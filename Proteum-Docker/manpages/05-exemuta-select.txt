@@ -1,0 +1,172 @@
+exemuta -select
+
+Program exemuta is used for several diferent things, depending on
+which is the first parameter provided. To avoid large help files,
+this one deals with the functionality provided when "-select" is
+th first parameter.
+
+It is used to select a subset of mutants among all the mutants 
+that have been generated using program mutagen. A mutant when is
+generated has a state of "active". It means that it will be used
+in the execution and computation of mutation score. Using this
+option of exemuta it is possible to select a subset of mutants
+leaving the other as "inactive". In this case all the subsequent
+operations and computations are done as if the inactive mutants
+do not exist. A mutant can be turned active and inactive any
+number of times.
+
+Parameters:
+
+The parameters are similar to those used by mutagen. They specify
+which mutant operators should be used to selec (keep active) 
+the mutants. Other parameters can also be provided to chance 
+the way the selective mutation is aplied.
+
+-------------------------------------
+-D directory
+
+Tells in wich directory the test session and all program files are.
+If this parameter is not used, all the programs must be in the current
+directory.
+
+-------------------------------------
+-all <percentage> 
+
+If the tester wants to select mutants for all operators, than this 
+parameter can be used. It is worth to note that the sampling rate 
+is applied individually per operator, not to the total set of mutants.
+If that is what the tester wants she should use parameter "-global".
+
+> exemuta -select -all 0.5 myprog
+
+will randomly select, for each operator, 50% of the mutants.
+
+-------------------------------------
+-<operator name> <percentage>
+
+This is similar to muta-gen parameter but takes only the percentage
+to select. For instance:
+
+>exemuta -select -u-SSDL 0.1 -u-ORRN 0.4 myprog
+
+will kill active 10% of SSDL and 40% od ORRN mutants. All the other
+mutants are marked inactive.
+
+Note that, as the operators are processed in the order they apear in
+the command line. For instance:
+
+>exemuta -select -u-S 0.4 -u-SSDL 1 myprog
+
+will select 40% of mutants of all Statement operators, except for SSDL
+which will have 100% of its mutants active.
+
+Note also that operators not mencioned in the command line are not
+changed. So, if the tester wants to select only mutants from SSDL, the
+correct statement would be:
+
+>exemuta -select all 0 -u-SSDL 1 myprog
+
+
+-------------------------------------
+-O filename
+
+The list of mutant operators and the respective percentage 
+value can be stored in a file. This parameter allows this file to be used
+to determine which mutants to generate.
+For instance,
+
+> exemuta -select -O ops.txt myprog
+
+will use "ops.txt" as the file that describes how to generate mutants. The
+file can be something like:
+
+-u- 1.0 0
+-u-C 0 0
+-II- 0.5 0
+
+Note that the second number in the file is not used by this command but it
+should be in the file so it is format compatible with the muta-gen program.
+
+------------------------------------
+-DD directory
+
+When -O option is used, this parameter determines in which directory 
+the operator file is stored.
+
+------------------------------------
+-f number and -t number 
+
+these two parameters stablish the range of the mutants to be select by
+the program. -f indicates the number of the first mutant (starting with 0) 
+and -t indicates the last one. If -f is not provived the it defaults to 0. 
+-t default value is the number of the last mutant.
+Example:
+
+> exemuta -select -u-SSDL 0.1 -f 10 myprog
+
+apply the selection on mutants from number 10 on.
+
+> exemuta -select -u-SSDL 0.1 -t 25 myprog
+
+apply the selection on mutants numbered form 0 to 25.
+
+> exemuta -select -u-SSDL 0.1 -f 10 -t 25 myprog
+
+apply the selection on mutants numbered fromm 10 to 25.
+
+------------------------------------
+-global
+
+Determines that selection is not done for each mentioned operator but
+among the complete set of mutants. 
+
+>exemuta -select -global 0.1 myprog
+
+selects 10% among all generated mutants.
+
+------------------------------------
+-seed N
+
+With this parameter, different samplings of mutants are created. If a 
+seed 0 is provided, the effect is the same as if the parameter is not 
+used.
+
+> exemuta -select -all 0.05 -seed 1 myprog
+
+------------------------------------
+-k
+
+This flag means "keep". The selection is applied only on active mutants.
+So, the sequence of invokations:
+
+> exemuta -select -all 0.5 myprog
+> exemuta -select -all 0.5 -k myprog
+
+will select 25% of mutants from all operators.
+
+------------------------------------
+-x list
+
+This parameter specifies a list of mutants to be keep active. All others
+will be deactivated.
+Examples:
+
+> exemuta -select -x 10 myprog
+
+will produce only one active mutant
+
+> exemuta -select -x "2 4 8 6" myprog
+
+will make mutants 2, 4, 6 and 8 actives. All others, inactive.
+
+------------------------------------
+-invert
+
+This parameter is not used *with* -select. Is is used instead of -select,
+it means, as the firts parameter in the command line. It determines that
+the states of all mutants will be togled. The ones that are inactive 
+become active and vice-versa
+
+> exemuta -invert myprog
+
+

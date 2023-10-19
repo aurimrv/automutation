@@ -1,0 +1,55 @@
+instrum
+
+This program is used for two different things. The first is to create
+an instrumented version of a given source file. The second is to 
+build an executable program, given this instumented version. 
+This file described the first functionality.
+
+Differently from other Proteum programs, this option of instrum does not
+take the name of a test session as its last parameter. Instead it takes
+the name of the source file being tested. But, a test session must be
+created with test-new before invoking instrum.
+
+
+Parameters
+-----------------------------------------
+-D directory
+
+Tells in wich directory the test session and all program files are.
+If this parameter is not used, all the programs must be in the current
+directory. 
+
+-------------------------------------
+-EE filename
+
+indicates the name of the trace file created when executing the instrumented 
+code. To use in a test session, this file must have the same name of the
+test session. 
+A typical sequence of calls to use instrum is this:
+
+> test-new myprog
+> instrum -EE myprog __myprog
+
+Note that the file name used is "__myprog". This is the source file created
+by test-new. It is a version pre-compiled of the original myprog.c.
+
+If the name of the tested source file does not match the session name, then
+we have something like this:
+
+> test-new -S myprog mysession
+> instrum -EE mysession __myprog
+
+In this case, mysession is the name of the test session and __myprog is the 
+name of the pre-compiled source file.
+
+As result, two files are created: __myprog_inst.c and __myprog_pp.c
+
+
+-------------------------------------
+-nootimize
+
+The normal instrumentation will produce a trace file in which each executed 
+node of the CFG graph appears only once. If this option is used, then the 
+whole path os the test case is in the trace file.
+
+

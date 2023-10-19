@@ -1,0 +1,142 @@
+exemuta -exec
+
+Program exemuta is used for several diferent things, depending on
+which is the first parameter provided. To avoid large help files,
+this one deals with the functionality provided when "-exec" is
+th first parameter.
+
+It is used to execute the mutants. It modifies the status of each mutant
+to reflect its condition of live or dead. If the test session was
+created in mode RESEARCH then all mutants are executed agains all
+test cases. It the session was created in mode TEST then once the
+mutant is killed it is not executed against the remaining test cases.
+
+Parameters:
+
+A few parameters can be provided in other to modify the default
+behavior.The last parameter in the command line is the name of the 
+test session (the one given when the test session was created).
+
+------------------------------------
+-trace
+
+This parameter is used to indicate that the execution trace of each
+test case should be used to avoid executing mutants that are not 
+reached by test cases. A test case has to be inserted with option
+"-trace" as well so this will be effective.
+
+> exemuta -exec -trace myprog
+
+------------------------------------
+-dual
+
+Determines the execution is done in Dual mode. This mode determines
+that a mutant M is killed by a test case t iff t reaches the mutation
+point of M and M produces the same result as the original program.
+See: 
+DELAMARO, Márcio Eduardo . Dual Mutation: The 'Save the Mutants' 
+Approach. In: III Brazilian Symposium on Software Quality, Brasília, 
+2004. p. 301-312.
+ 
+> exemuta -exec -dual myprog
+
+------------------------------------
+-D directory
+
+Tells in wich directory the test session and all program files are.
+If this parameter is not used, all the programs and test session files 
+must be in the current directory.
+
+------------------------------------
+-Q num_muta
+
+When the mutants are executed, they have to be compiled first. Each mutant
+is not compiled separately. Instead, several mutants are merged in a single
+file and then compilation is done only once for those mutants. This parameter
+determines how many mutants *at most* will be merged together. Currently,
+100 is the maximum of mutants, even is this parameter says a larger number.
+
+> exemuta -exec -Q 10 myprog
+
+will compile at most 10 mutants at each time, in a simgle file.
+
+------------------------------------
+-f number and -t number 
+
+these two parameters stablish the range of the mutants to be execute by
+the program. -f indicates the number of the first mutant (starting with 0) 
+and -t indicates the last one. If -f is not provived the it defaults to 0. 
+-t default value is the number of the last mutant.
+Example:
+
+> exemuta -exec -f 10 myprog
+
+executes all mutants from number 10 on.
+
+> exemuta -exec -t 25 myprog
+
+executes mutants numbered form 0 to 25.
+
+> exemuta -exec -f 10 -t 25 myprog
+
+executes mutants numbered fromm 10 to 25.
+
+------------------------------------
+-T timeout
+
+This parameter allows the tester to control how much time is needed to
+consider a mutant killed by timeout. The value provided indicates how 
+many times the execution time of a mutant should exceed the execution
+time of the original program for that mutant to be considered dead.
+For instance
+
+> exemuta -exec -T 10 myprog
+
+will kill a mutan M with a test case t if the execution runtime is
+higher the 10 times the execution time of the original program with t.
+
+Providing a large value for the timeout will garantee that no mutant
+is falsely kill by timeout. On the other hand it might slow down the
+execution process, mainly in RESEARCH mode sessiions.
+
+------------------------------------
+-V char
+
+This parameter turns on the "verbose" mode of exemuta. Actualy, it 
+determines that for each mutant executed a "char" is printed in the
+stdout so the tester can see how fast/slow the process is being done.
+For each source file created (remember that each file contains several
+mutants) a message is also printed on the stdout says how many mutants
+are grouped in that file and the total number of mutants already 
+executed.
+
+> exemuta -exec -v . myprog
+
+prints a "." for each mutant executed.
+
+------------------------------------
+-seed N
+
+Determine the order in which the test cases should be used to execute
+the mutants. If N = 0 (or if this parameter is not used) then the
+order is the same as the test cases are numbered. Otherwise, N is 
+used as a seed to randomly shufle the test cases.
+For instance:
+
+>exemuta -exec -seed 1 myprog
+>exemuta -exec -seed 2 myprog
+
+use two differen sequences of the test cases to execute the mutants.
+
+------------------------------------
+-compile
+
+Is used instead of -exec. It will try to create and compile all the mutants
+but will not execute them.
+
+------------------------------------
+-update
+
+Is used instead of -exec. It does not execute the mutants, it just updates
+the counts of live/dead/equivalent mutants.
+

@@ -1,0 +1,88 @@
+list-good
+
+This program is used to delete or disable test cases that are not effective,
+it means, those that do not kill any mutants and so are useless in the 
+test session.
+
+Parameters:
+
+-------------------------------------------
+-D directory
+
+Tells in wich directory the test session and all program files are.
+If this parameter is not used, all the programs must be in the current
+directory.
+
+-------------------------------------
+-d 
+
+This parameter instructs the program to delete those test cases that
+are not effective. If neither -d nor -i are used, then the program
+lists the effective test cases selected but does nothing with those
+not selected.
+
+> list-good -d myprog
+
+Lists the test cases selected, i.e., those that kill at least one 
+mutant and delete all the others. Note that with this parameters
+the test cases are selected in the order they are numbered, it 
+means, the order they appear in the test set.
+
+-------------------------------------
+-i
+
+This parameter instructs the program to disable those test cases that
+are not effective. If neither -d nor -i are used, then the program
+lists the effective test cases selected but does nothing with those
+not selected. Disabled test cases can be latter enabled using, for 
+instance the "tcase" program.
+
+> list-good -i myprog
+
+-------------------------------------
+-research
+
+When a test session is created with the RESEARCH mode, all test cases
+are used with all mutants. So, when using list-good, all test cases 
+would be selected as effective because all of then kill at least one
+mutant. Using the option indicates that test cases are selected in 
+a given order, until all mutants are killed. The remaing test cases
+are ignored, even if they kill any of the (already dead) mutants.
+
+>list-good -i -reseach myprog
+
+Selects test cases until all non equivalent mutants are killed. The
+others are disabled.
+
+-------------------------------------
+-seed N
+
+This parameter tells how the test cases are selected from the existing
+test set. If N is 0 (or if the parameter is not used) then the test
+cases are selected in the same order they are numbered. In N has a 
+different value, the test cases are randomly selected. Different 
+values of N determine different selection sequences. It is particularly
+useful when used with option -research.
+
+> list-good -i -research -seed 0 myprog
+> list-good -i -research myprog
+
+Select test cases in the same order they appear in the test set.
+The rest are disabled.
+
+> list-good -i -research -seed 1 myprog
+> list-good -i -research -seed 2 myprog
+
+Select test cases in the two different random order. The rest are 
+disabled.
+
+-------------------------------------
+-label
+
+list-good shows in the standard output, the list of test cases selected.
+If this parameter is not provided, the number of the test case is 
+printed. If this parameter is used, then the labels associated with the
+test cases are shown (see tcase for details on test case label).
+
+> list-good -i -label myprog
+

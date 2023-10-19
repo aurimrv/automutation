@@ -1,0 +1,113 @@
+exemuta
+
+Program exemuta is used for several diferent things, depending on
+which is the first parameter provided. To avoid large help files,
+this one deals with the functionalities provided to build mutant
+source and executable files
+
+Parameters:
+
+------------------------------------------
+-build
+
+This must be the first parameter of the command line.
+Creates a mutant source file that merges a list of mutants. The
+list is provided with argument "-x" described bellow. It displays
+the name of the created source file in the standard output.
+
+The source file can be compiled and executed. However, the file
+merges together several mutants and so it includes some strange
+code to manage the execution of one of the mutants. So that 
+file is not good for human reading. Better options are created
+with -buil-view or -build-one parameters.
+
+In addition, if the tester wants to reproduce the execution of
+one of the mutants she has to indicate which mutant she wants
+to execute. This is done by seting the environment variable 
+MUTANTTOEXEC, before executing the mutant.
+
+For instance:
+
+> exemuta -build -x "0 2 4" myprog
+> #compile the source
+> export MUTANTTOEXEC=2
+> #execute the binary
+> export MUTANTTOEXEC=4
+> #execute the binary
+> export MUTANTTOEXEC=0
+> #execute the binary
+
+With these calls, the tester reproduces the execution of mutants 
+2, 4 and 0, in this order.
+
+------------------------------------------
+-e
+
+This option can be used with -build to determine that also the executable
+file should be created. For that, exemuta colsults the test session 
+description to find the compilation command it should invoke.
+For instance:
+
+> exemuta -build -e -x "0 2 4" myprog
+> export MUTANTTOEXEC=2
+> #execute the binary
+> export MUTANTTOEXEC=4
+> #execute the binary
+> export MUTANTTOEXEC=0
+> #execute the binary
+
+Note that it was not necessary to compile the source file.
+
+------------------------------------------
+-H directory
+
+To be used with -build and -buil-view.
+
+Sometimes exemuta has to call other programs from Proteum. So it uses
+the environment variable PROTEUMIMHOME to locate such programs. If
+the variable is not set of if the tester wants to change the location
+where to find those programs, this can be done with -H
+
+> exemuta -build -x 1 -H /share/proteum/bin myprog
+
+In this example Proteum programs will be searched in the given directory.
+
+------------------------------------------
+-x list
+
+This parameter specifies a list of mutants to be included in the source
+file.It can be used with -build, build-all, -build-view and -build-one. 
+In the last two, only one number should be provided
+
+Examples:
+
+> exemuta -build-one -x 10 myprog
+
+will produce only one active mutant
+
+> exemuta -build -x "2 4 8 6" myprog
+
+-------------------------------------
+-D directory
+
+Tells in wich directory the test session and all program files are.
+If this parameter is not used, all the programs must be in the current
+directory.
+
+-------------------------------------
+-build-all
+
+This must be the first parameter of the command line.
+Creates a mutant source file with one single mutant and without any of
+the extra code used to merge several mutants in a single file. The 
+produced file can be compiled and the executed without the need of 
+seting an environmet variable to indicate which mutant to execute.
+
+-------------------------------------
+-build-view
+
+This must be the first parameter of the command line.
+Creates a mutant source file with one single mutant and only the 
+mutate function in it. So the produced file is ok for viewing but can
+not be used to compile and execute the mutant.
+

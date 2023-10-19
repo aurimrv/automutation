@@ -1,0 +1,39 @@
+instrum -build
+
+This program is used for two different things. The first is to create
+an instrumented version of a given source file. The second is to 
+build an executable program, given this instumented version. 
+This file described the second functionality.
+
+This option takes two parameters. As usual, the name of the test session
+is the last one. The other is the name of the instrumented files.
+
+
+Parameters
+-----------------------------------------
+-D directory
+
+Tells in wich directory the test session and all program files are.
+If this parameter is not used, all the programs must be in the current
+directory. 
+
+Examples of use:
+
+> test-new myprog
+> instrum -EE myprog __myprog
+> instrum-build __myprog myprog
+
+Note that the file name used is "__myprog". This is the source file created
+by test-new. It is a version pre-compiled of the original myprog.c.
+myprog is the name of the test session.
+
+If the name of the tested source file does not match the session name, then
+we have something like this:
+
+> test-new -S myprog mysession
+> instrum -EE mysession __myprog
+> instrum -build __myprog mysession
+
+In this case, mysession is the name of the test session and __myprog is the 
+name of the pre-compiled source file.
+

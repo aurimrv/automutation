@@ -1,0 +1,17 @@
+
+@main
+     time                localtime           atoi                fprintf        
+     exit                printf              cal                 pstr
+
+
+@pstr
+     printf
+
+
+@cal
+     jan1
+
+
+@jan1
+
+

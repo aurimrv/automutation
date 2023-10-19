@@ -1,0 +1,155 @@
+muta-gen
+
+Is used to generate the mutants. It modifies the mutants file, by
+adding new mutant descriptors. If a mutant has already been created
+it is not modified or erased.
+
+Parameters:
+
+This program receives as parameters the description of which mutant 
+operators should be used and how to use them. Parameters can also 
+be used to determine which units and/or connections should be mutated.
+The last parameter in the command line is the name of the test session
+(the one given when the test session was created).
+
+------------------------------------
+-<operator name> <percentage>  <maximum>
+
+This is a single parameter which takes 3 values. The first is the name 
+of the operator that one wants to use to create mutants. The name is 
+preceeded by a "-". For instance:
+
+> muta-gen -u-SSDL 1.0 0 myprog
+
+generates mutants using the u-SSDL mutant operator. The first number 
+indicates the sampling rate of this operator. For example, 1.0 means
+that all the mutants are going to be generated for u-SSDL; 0.5 would
+mean 50%, 0.1 means 10% and so on. 
+The second number is an integer that indicates the maximum number o f
+mutants in each mutation point. For instance, u-ORRN (replace relational
+operators) always generate 5 mutants for each relational operator it 
+finds in the program. This parameter can be used to limit this number, 
+as in:
+
+> muta-gen -u-ORRN 1.0 3 myprog
+
+would create only 3 mutants for each mutation point. The 3 mutants are
+randomly selected out of the 5 possible options. Using 0 for this value
+means that this value is not used, so all mutants are generated.
+
+The operator names provided are compared againt the actual operators 
+implemented in the tool. If the parameter is a prefix of the an operator
+name than that operator is used. For instance, 
+
+> muta-gen -u-C 1.0 0 myprog
+
+generates all mutants for Constant Operators class, i.e, all operator 
+which name starts with "u-C". Also, the X character can be used as a
+wild card. So
+
+> muta-gen -u-XXDL 1.0 0 myprog 
+
+will generate mutants for all operators wich names start with this patern
+as u-SSDL, u-CCDL, u-VVDL and u-OODL.
+
+The parameters are evaluated in the order they appear in the command line.
+So, 
+
+> muta-gen -all 1.0 0 -u-C 0 0 myprog
+
+generates all mutants, for all operators, except for the constant operator,
+for which no mutant is generate (0%).
+
+-------------------------------------
+-all <percentage>  <maximum>
+
+If the tester wants to generate mutants for all operators, than this 
+parameter can be used. It is worth to note that the sampling rate and 
+maximum nunber are applied individually per operator. 
+
+> muta-gen -all 0.5 0 myprog
+
+will generate, for each operator, 50% of the mutants.
+
+-------------------------------------
+-O filename
+
+The list of mutant operators and the respective percentage and maximum 
+values can be stored in a file. This parameter allows this file to be used
+to determine which mutants to generate.
+For instance,
+
+> muta-gen -O ops.txt myprog
+
+will use "ops.txt" as the file that describes how to generate mutants. The
+file can be something like:
+
+-u- 1.0 0
+-u-C 0 0
+-II- 0.5 0
+
+-------------------------------------
+-unit unitname
+
+This parameter indicates the name of one unit that where the ooperators must
+be applied. It can appear several times in a single command so several units
+can be mutated. For instanceÇ
+
+muta-gen -unit main -unit myunit -all 1 0 myprog
+
+generates all mutants for units "main" and "myunit". If this parameter is not
+provided, them all units in the source file are mutated.
+
+-------------------------------------
+-seed seednumber
+
+With this parameter it is possible to generate diferent sets of mutants, when
+random sampling is used. For instance, the following two statements will 
+generate differen sets of mutants, for the same u-SSDL operator.
+
+>mutagen -seed 0 -u-SSDL 0.1 0 myprog
+>mutagen -seed 1 -u-SSDL 0.1 0 myprog
+
+Not using this parameter is the same as using -seed 0.
+
+-------------------------------------
+-c <caller unit> <callee unit>
+
+In the case of interface mutation operators, each mutant is associated to a 
+connectio (a par of caller and calee units). So, this parameter is analogous
+to -unit but stablishes to which connections the operators should be applied.
+If this parameter is not used, then all connections in the source file will
+be mutated.
+Example:
+
+> muta-gen -II- 1.0 0 -c main myunit myprog
+
+generates all mutants related to Group II operators, applied to connection 
+main-myunit, i.e., the points where function main makes calls to function
+myunit.
+
+-------------------------------------
+-r 
+
+For interface mutation operators, this parameters instructs the program 
+not to generate mutants for "system" functions like, printf or others.
+More precisely, if a function A makes calls to a function B and B is not
+in the source file being tested, then the connection A-B will not be 
+mutated when -r is used.
+
+-------------------------------------
+-D directory
+
+Tells in wich directory the test session and all program files are.
+If this parameter is not used, all the programs must be in the current
+directory.
+
+------------------------------------
+-DD directory
+
+When -O option is used, this parameter determines in which directory 
+the operator file is stored.
+
+------------------------------------
+
+

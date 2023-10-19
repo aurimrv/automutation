@@ -1,0 +1,85 @@
+muta
+
+Program to manage the set of mutants already created. To create
+mutants use muta-gen.
+
+Parameters:
+
+-------------------------------------------
+-D directory
+
+Tells in wich directory the test session and all program files are.
+If this parameter is not used, all the programs must be in the current
+directory. 
+
+-------------------------------------
+-create
+
+This should be the first parameter in the command line. It recreates 
+the mutants database. So, all the existing mutants and their states
+are thrown away.
+Accepts only -D option
+
+> muta -create myprog
+
+Creates an empty set of mutants.
+
+-------------------------------------
+-l 
+
+Shows the mutants on stdout. Can be used with parameters -t, -f, -x, -D.
+If a specific set of mutants is not specified then the program acts on
+all mutants.
+For example:
+
+> muta -l myprog
+
+Show all the mutants in the test session.
+
+> muta -l -f 10 -t 20 myprog
+
+Shows mutants from number 10 to number 20.
+
+> muta -l -x "20 10" myprog
+
+Shows mutants number 20 and number 10, in this order.
+
+-------------------------------------
+-equiv and -nequiv
+
+-equiv is used to set the mutants as equivalent. -nequiv to set as 
+non-equivalent. Can be used with parameters -t, -f, -x, -D.
+If a specific set of mutants is not specified then the program acts on
+all mutants.
+For example:
+
+> muta -equiv myprog
+
+Sets all *live* the mutants in the test session as equivalents (except).
+
+> muta -nequi -f 10 -t 20 myprog
+
+Sets all equivalent mutants from number 10 to number 20 as non-equivalents.
+
+> muta -equiv -x "20 10" myprog
+
+Sets mutants number 20 and number 10 as equivalents, if they are alive.
+
+-------------------------------------
+-anomalous and -nanomalous
+-active and -nactive
+
+These options are similar to -equiv and -nequiv but used to set mutants
+as anomalous/non anomalous and active/inactive. 
+Anomalous mutants should be only those that fail to compile with the 
+given compilation command provided when the test session is created.
+
+-------------------------------------
+-ms
+
+Prints the current mutation score on stdou. Can be used only with -D.
+
+> muta -ms myprog
+
+-------------------------------------
+

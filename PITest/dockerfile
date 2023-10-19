@@ -1,0 +1,20 @@
+# Use an official Maven image as a parent image
+FROM maven:3.8.3-openjdk-11
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the Java project source code, pom.xml, and JUnit dependencies to the container
+COPY . /app
+
+VOLUME /app/target/pit-reports
+
+# Build the project
+RUN mvn clean install
+
+# Command to execute PITest
+#RUN mvn org.pitest:pitest-maven:mutationCoverage
+
+#CMD [ "bash" ]
+
+CMD [ "mvn", "org.pitest:pitest-maven:mutationCoverage" ]

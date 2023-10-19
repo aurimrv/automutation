@@ -1,0 +1,236 @@
+tcase
+
+This program is used to manage the test set used in a Proteum test session.
+The test cases used to execute the mutants are stored in a proprietary,
+binary file, so it only can be used and managed Proteum programs.
+
+To add a new test case, the tester uses this program, providing the command
+line parameters to execute the program under test (PUT). tcase then starts the
+PUT with those parameters and the tester can interact with it, if additional
+data is needed through the stdin. At the ende of the execution, the command
+line parameters, the stdin data, stdou, stderr and the time consumed in the
+execution are stored as a test case. Depending on how tcase is invoked, also
+the nodes of the control flow graph visited during the test case execution 
+are also recorded.
+
+Parameters:
+
+There is a variety of parameters and several different functionalities 
+provided by this program. In general, the first parameter indicates 
+whch functionality should be executed, as for instace: insert a test
+case, enable/disable test cases, list test cases, etc.
+
+The last parameter in the command line is the name of the test session
+(the one given when the test session was created).
+
+------------------------------------
+-create
+
+This must be the first paramenter in the command line. It indicates that
+a new test case will be created. All the existing test cases will be
+lost. No further parameters beside the session name are required. 
+Parameter -D may or may not be provided.
+Example
+
+> tcase -create myprog
+
+recreates the test set file for session "myprog".
+
+------------------------------------
+-l
+
+This must be the first paramenter in the command line. Lists in the
+stdout all or some of the test cases in the test set file. parameters -D
+-t -f and -x can be provided with this option.
+Example:
+
+> tcase -l myprog
+
+shows on the stdou, all the test cases in the "myprog"session.
+
+------------------------------------
+-f number and -t number 
+
+these two parameters stablish the range of the test cases to be addressed by
+the program. -f indicates the number of the first test case (starting with 1) 
+and -t indicates the last one. If -f is not provived the it defaults to 1. 
+-t default value is the number of the last test case.
+Example:
+
+> tcase -l -f 10 myprog
+
+shows all test cases from number 10 on.
+
+> tcase -l -t 25 myprog
+
+shows test cases numbered form 1 to 25.
+
+> tcase -l -f 10 -t 25 myprog
+
+shows test cases numbered from 10 to 25.
+
+------------------------------------
+-x list
+
+This parameter specifies a list of test cases to be managed by the program
+Examples:
+
+> tcase -x 10 myprog
+
+shows test case number 10
+
+> tcase -x "2 4 8 6" myprog
+
+shows test cases 2, 4, 8 and 6, in this order.
+
+------------------------------------
+-e or -i or -d
+
+This must be the first paramenter in the command line. -e enables test cases
+and -i disables test cases. -d deletes test cases from the test set.
+
+Deleting a test case removes it from the test set and it can not be recovered
+for future use. Disabling test cases allow the test to try different test sets
+without actually removing the test cases, that can be re-used by enabling
+them again. When a test case is removed or desabled from a test set, nothing
+else changes, in particular, the state of the mutants continue the same, 
+until they are executed using program "exemuta". The same happens when a 
+test case is enabled, i.e., the effect of this action is only seen when
+mutants are executed again.
+
+When -d is used, the test set is modified and so, the numbers os the test cases
+change. For exemple, in a test set with 10 test cases, the following call
+
+> tcase -d -f 2 -t 9 myprog
+
+will resul in a set of 2 test cases, numbered 1 and 2.
+
+More examples:
+
+> tcase -i myprog
+> tcase -e -x "2 7 8" myprog
+
+will disable all test cases and then enable only test cases number 2, 7 and 8.
+
+
+------------------------------------
+-add 
+
+This must be the first paramenter in the command line. It indicates that
+a new test case will be included in the test session. 
+The options bellow should be used to define how the test case is executed
+and inserted. The following command will insert a new test case, assuming
+default values for all the parameters:
+
+> tcase -add myprog
+
+------------------------------------
+-D directory
+
+if this parameter is not used, all the programs and all the test session files
+must be in the current. If -D is used, this can be changed. 
+Example:
+
+> tcase -add -D /home/user/tests myprog
+
+inserts a new test case in the session named myprog, located at the given
+directory.
+
+------------------------------------
+-E filename
+
+With this parameter, the tester can tell which program should be executed 
+to insert the test case. The inputs and the outputs of such execution are
+recorded and stored as the test case. If this option is not given, then 
+the same name of the test session is assumed as the name of the executable 
+file.
+Example:
+
+> tcase -add -E myprog.exe myprog
+
+insertes a new test case by executing program "myprog.exe". If this option 
+was not used then tcase would try to execute "myprog".
+
+------------------------------------
+-DD directory
+
+This parameter specifies where the executable files used to insert the 
+test case are located. If this parameter is not provided then the same 
+directory provided by -D option is used, or the current directory if 
+-D is not used as well.
+Example:
+
+> tcase  -add -DD /home/user/tests -E myprog.exe myprog
+
+insertes a new test case by executing program "myprog.exe" located at
+the given directory. The test session files are still located in the
+current direcoty
+
+------------------------------------
+-trace 
+
+With this parameter, tcase will also collect trace data for the test 
+case. So, besides the inputs and outputs, the number of the nodes in
+the control flow graph that are reached by the execution are also
+recorded. This option requires the use of an intsrumented version 
+of the PUT, as created by the Proteum "instrum" program.
+
+------------------------------------
+-EE filename
+
+This parameter the tester can specify which executable program should
+be used to colect the execution trace. If it is not provided, then 
+the name of the test session is used as the name of the executable 
+file. Note that this may be a different file from that specified
+by -E option.
+Example:
+
+> tcase -add -trace -E myprog.exe -EE myprog_instr.exe myprog
+
+insertes a new test case by executing program "myprog.exe" and 
+"myprog_instr.exe" to collected the trace. 
+
+------------------------------------
+-p parameters
+
+This parameter is used to provide the command line parameters required
+by the test case execution. Those parameters will be used to execute
+the programs provided by options -E and -EE to collected the test
+case information.
+Example:
+
+> tcase -add -trace -E myprog.exe -EE myprog_instr.exe \ 
+  -p "foo bar 123" myprog
+
+insertes a new test case by executing command "myprog.exe foo bar 123" 
+and "myprog_instr.exe foo bar 123" to collected the trace. If -p 
+option is not provided then no command line parameter will be provided
+to the executable programs.
+
+------------------------------------
+-P 
+
+With this option, the command line parameters are provided by the 
+tester via stdin. So, before executing the programs provided by options
+-E and -EE, tcase will prompt the tester for the command line parameters.
+
+------------------------------------
+-label name
+
+This allows to name the test case so it may be identified in future use.
+Example:
+
+> tcase -add -label "No param" myprog
+> tcase -add -label "One param" -p foo myprog
+> tcase -add -label "Two param" -p "foo bar" myprog
+ 
+these three commands insert three test cases with differen names.
+
+------------------------------------
+
+Obs: Proteum has also a program named tcase-add that is just a shortcut 
+for "tcase -add" and accepts the same parameters, except -E. The name 
+of the executable is taken from the test session file. So even if it is 
+not the same name of the test session, there is no need to provide its
+name.
+
