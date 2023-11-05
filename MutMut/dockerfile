@@ -1,0 +1,21 @@
+# Use a imagem oficial do Python como base
+FROM python:3.8
+
+# Defina o diretório de trabalho no contêiner
+WORKDIR /app
+
+# Copie o código-fonte e o arquivo requirements.txt para o contêiner
+COPY . /app
+
+# Instale as dependências do MutMut e pytest
+RUN pip install -r requirements.txt
+
+# Execute MutMut para gerar os resultados de mutação
+#mutmut run --paths-to-mutate path/to/code --paths path/to/tests
+#RUN mutmut run --paths-to-mutate=my_code.py,test_my_code.py
+# para testar
+CMD [ "bash" ]
+
+
+# Execute pytest para rodar os testes unitários
+RUN pytest
